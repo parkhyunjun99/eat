@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -27,10 +27,15 @@ public class DrugInfoActivity extends AppCompatActivity {
         setContentView(R.layout.mainlayout);
 
         layout = findViewById(R.id.linearlayout2);
+        layout.setGravity(Gravity.CENTER);
 
         // SharedPreferences에서 모든 약의 이름 가져오기
         SharedPreferences sharedPref = this.getSharedPreferences("DrugItems", Context.MODE_PRIVATE);
         Map<String, ?> allEntries = sharedPref.getAll();
+
+        // SharedPreferences에서 체크박스 텍스트 저장
+        SharedPreferences checkBoxPrefs = getSharedPreferences("CheckBoxes", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = checkBoxPrefs.edit();
 
         // 모든 약의 이름에 대해 체크박스를 생성합니다.
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
@@ -42,12 +47,16 @@ public class DrugInfoActivity extends AppCompatActivity {
             checkBox.setTextColor(Color.BLACK);
             checkBox.setTextSize(18);
 
+            // CheckBox의 텍스트를 SharedPreferences에 저장
+            editor.putString(itemName, itemName);
+
             // LinearLayout에 체크리스트 추가
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             layout.addView(checkBox, layoutParams);
         }
+        editor.apply();
 
         Button addButton = findViewById(R.id.button2);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +79,19 @@ public class DrugInfoActivity extends AppCompatActivity {
                 finish();
             }
         });
-    }
 
+
+
+        Button calButton = findViewById(R.id.button3);
+        calButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // calButton 클릭 시, Calender 액티비티로 이동
+                Intent intent = new Intent(DrugInfoActivity.this, Calender.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
 }
