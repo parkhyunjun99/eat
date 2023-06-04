@@ -166,7 +166,7 @@ public class Dist extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setContentView(R.layout.mainlayout);
-                itemNameTextView = findViewById(R.id.itemNameTextView);
+              //  itemNameTextView = findViewById(R.id.itemNameTextView);
 
 
                 // 데이터베이스에서 선택한 약물 데이터 가져오기

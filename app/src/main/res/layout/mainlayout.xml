@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:text="Button" />
+            android:text="약 검색" />
 
 
 
@@ -47,7 +47,7 @@
             android:id="@+id/button1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Button 1"
+            android:text="지도"
             android:layout_weight="1"
             android:layout_margin="8dp" />
 
@@ -55,7 +55,7 @@
             android:id="@+id/button2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="약 추가하기"
+            android:text="약 등록"
             android:layout_weight="1"
             android:layout_margin="8dp" />
 
@@ -63,7 +63,7 @@
             android:id="@+id/button3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Button 3"
+            android:text="복용일지"
             android:layout_weight="1"
             android:layout_margin="8dp" />
 

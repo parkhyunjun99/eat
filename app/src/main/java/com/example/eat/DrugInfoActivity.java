@@ -33,22 +33,32 @@ public class DrugInfoActivity extends AppCompatActivity {
         SharedPreferences sharedPref = this.getSharedPreferences("DrugItems", Context.MODE_PRIVATE);
         Map<String, ?> allEntries = sharedPref.getAll();
 
-        // SharedPreferences에서 체크박스 텍스트 저장
-        SharedPreferences checkBoxPrefs = getSharedPreferences("CheckBoxes", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = checkBoxPrefs.edit();
+        // SharedPreferences에서 체크박스 상태 저장
+        final SharedPreferences checkBoxStatePrefs = getSharedPreferences("CheckBoxStates", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor stateEditor = checkBoxStatePrefs.edit();
 
         // 모든 약의 이름에 대해 체크박스를 생성합니다.
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            String itemName = entry.getValue().toString();
+            final String itemName = entry.getValue().toString();
 
             // 동적으로 체크리스트 생성
-            CheckBox checkBox = new CheckBox(this);
+            final CheckBox checkBox = new CheckBox(this);
             checkBox.setText(itemName);
             checkBox.setTextColor(Color.BLACK);
             checkBox.setTextSize(18);
 
-            // CheckBox의 텍스트를 SharedPreferences에 저장
-            editor.putString(itemName, itemName);
+            // CheckBox 상태 불러오기
+            boolean isChecked = checkBoxStatePrefs.getBoolean(itemName, false);
+            checkBox.setChecked(isChecked);
+
+            // CheckBox 클릭 시 상태 저장
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    stateEditor.putBoolean(itemName, checkBox.isChecked());
+                    stateEditor.apply();
+                }
+            });
 
             // LinearLayout에 체크리스트 추가
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -56,7 +66,6 @@ public class DrugInfoActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             layout.addView(checkBox, layoutParams);
         }
-        editor.apply();
 
         Button addButton = findViewById(R.id.button2);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -79,8 +88,6 @@ public class DrugInfoActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
 
         Button calButton = findViewById(R.id.button3);
         calButton.setOnClickListener(new View.OnClickListener() {
