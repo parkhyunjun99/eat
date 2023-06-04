@@ -25,8 +25,9 @@ public class Calender extends AppCompatActivity {
     TextView tv_text;
     private LinearLayout layout;
 
-    // 체크박스들을 저장할 리스트를 선언
     private List<CheckBox> checkBoxes = new ArrayList<>();
+    private SharedPreferences checkBoxStatePrefs;
+    private String currentDate;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -35,28 +36,24 @@ public class Calender extends AppCompatActivity {
         setContentView(R.layout.calender);
 
         layout = findViewById(R.id.calenderLayout);
+        checkBoxStatePrefs = getSharedPreferences("CheckBoxStates", Context.MODE_PRIVATE);
 
-        // SharedPreferences에서 CheckBox 텍스트 불러오기
         SharedPreferences checkBoxPrefs = getSharedPreferences("CheckBoxes", Context.MODE_PRIVATE);
         Map<String, ?> allEntries = checkBoxPrefs.getAll();
 
-        // 모든 약의 이름에 대해 체크박스를 생성합니다.
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             String itemName = entry.getValue().toString();
 
-            // 동적으로 체크리스트 생성
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(itemName);
             checkBox.setTextColor(Color.BLACK);
             checkBox.setTextSize(18);
 
-            // LinearLayout에 체크리스트 추가
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             layout.addView(checkBox, layoutParams);
 
-            // 생성한 체크박스를 리스트에 추가
             checkBoxes.add(checkBox);
         }
 
@@ -67,13 +64,30 @@ public class Calender extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int day) {
-                tv_text.setText(year + "년" + (month + 1) + "월" + day + "일");
+                String newDate = year + "-" + (month + 1) + "-" + day;
+                tv_text.setText(newDate);
 
-                // 날짜가 변경될 때마다 체크박스를 모두 해제
-                for (CheckBox checkBox : checkBoxes) {
-                    checkBox.setChecked(false);
+                // Save the state of checkboxes for the old date
+                if (currentDate != null) {
+                    SharedPreferences.Editor editor = checkBoxStatePrefs.edit();
+                    for (CheckBox checkBox : checkBoxes) {
+                        String key = currentDate + "_" + checkBox.getText().toString();
+                        boolean isChecked = checkBox.isChecked();
+                        editor.putBoolean(key, isChecked);
+                    }
+                    editor.apply();
                 }
+
+                // Load the state of checkboxes for the new date
+                for (CheckBox checkBox : checkBoxes) {
+                    String key = newDate + "_" + checkBox.getText().toString();
+                    boolean wasChecked = checkBoxStatePrefs.getBoolean(key, false);
+                    checkBox.setChecked(wasChecked);
+                }
+
+                currentDate = newDate;
             }
         });
     }
 }
+
