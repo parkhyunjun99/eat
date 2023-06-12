@@ -60,6 +60,8 @@ public class DrugInfoActivity extends AppCompatActivity {
                 }
             });
 
+
+
             // LinearLayout에 체크리스트 추가
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -100,5 +102,7 @@ public class DrugInfoActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
     }
 }

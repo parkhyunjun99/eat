@@ -3,7 +3,9 @@ package com.example.eat;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -17,12 +19,12 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+
 public class MainActivity extends Activity {
 
     EditText edit;
     TextView text;
-    String str; //= edit.getText().toString();
-
+    String str;
 
     String key="Kz9SWzAXKdBc%2F16leusx9Mi65rCCzbm6DOtk3RTaeoOyzhVEux8V5BRxkum8tSOEbLGmUVTMfnE5eGVJGVpSPg%3D%3D";
 
@@ -31,42 +33,34 @@ public class MainActivity extends Activity {
     public MainActivity() throws UnsupportedEncodingException {
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
-
-
-
 
         edit= findViewById(R.id.edit);
         text= findViewById(R.id.text);
 
-        str = edit.getText().toString();
-
-        try{  String entpName = URLEncoder.encode(str, "UTF-8");
-            String itemName = URLEncoder.encode("한미아스피린장용정100밀리그램", "UTF-8"); }
-        catch(UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-
+        Button button4 = findViewById(R.id.button4);
+        button4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, DrugInfoActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     //Button을 클릭했을 때 자동으로 호출되는 callback method
     public void mOnClick(View v) {
         if (v.getId() == R.id.button) {
+            str = edit.getText().toString();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        data = getXmlData();
+                        String itemName = URLEncoder.encode(str, "UTF-8");
+                        data = getXmlData(itemName);
                     } catch (UnsupportedEncodingException e) {
                         throw new RuntimeException(e);
                     }
@@ -84,15 +78,10 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(MainActivity.this, DrugInfoActivity.class);
             startActivity(intent);
         }
-
     }
 
-
-    String getXmlData() throws UnsupportedEncodingException {
+    String getXmlData(String itemName) throws UnsupportedEncodingException {
         StringBuffer buffer = new StringBuffer();
-
-        String str = edit.getText().toString();
-        String itemName = URLEncoder.encode(str, "UTF-8");
 
         String queryUrl = "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?"
                 + "&itemName=" + itemName
@@ -100,6 +89,7 @@ public class MainActivity extends Activity {
 
         try {
             URL url = new URL(queryUrl);
+            Log.d("API CALL", "Requesting: " + url.toString());
             InputStream is = url.openStream();
 
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -120,6 +110,11 @@ public class MainActivity extends Activity {
 
                         if (tag.equals("item")) {
                             buffer.append("\n\n=== 약 정보 ===\n");
+                        } else if (tag.equals("itemSeq")) {
+                            buffer.append("약 코드: ");
+                            xpp.next();
+                            buffer.append(xpp.getText());
+                            buffer.append("\n");
                         } else if (tag.equals("entpName")) {
                             buffer.append("제조사: ");
                             xpp.next();
@@ -157,10 +152,12 @@ public class MainActivity extends Activity {
 
         } catch (Exception e) {
             e.printStackTrace();
-            buffer.append("파싱 예외\n");
+            buffer.append("파싱 예외\n"+ e.getMessage() + "\n");
+            Log.e("API ERROR", e.toString());
         }
 
         buffer.append("파싱 끝\n");
 
         return buffer.toString();
-    }}
+    }
+}

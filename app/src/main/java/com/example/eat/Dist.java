@@ -1,5 +1,6 @@
 package com.example.eat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -165,8 +166,11 @@ public class Dist extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.mainlayout);
-              //  itemNameTextView = findViewById(R.id.itemNameTextView);
+                // setContentView(R.layout.mainlayout);
+                Intent intent = new Intent(Dist.this, DrugInfoActivity.class);
+                startActivity(intent);
+
+                // itemNameTextView = findViewById(R.id.itemNameTextView);
 
 
                 // 데이터베이스에서 선택한 약물 데이터 가져오기
