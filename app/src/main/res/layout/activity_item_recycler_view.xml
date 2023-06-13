@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="35dp">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pig"
+        tools:srcCompat="@drawable/pig" />
+
+
+    <TextView
+        android:id="@+id/textView1"
+        style="@style/recyclerview_contents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="영화이름"
+        android:textSize="18sp"/>
+
+
+    <TextView
+        android:id="@+id/textView2"
+        style="@style/recyclerview_contents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="누적관객수"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        style="@style/recyclerview_contents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="영화개봉일"
+        android:textSize="18sp" />
+
+
+</LinearLayout>
